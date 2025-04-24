@@ -1,6 +1,9 @@
+from token_utils import count_tokens
+
 class GenericAgent:
-    def __init__(self, llm):
+    def __init__(self, llm, tracker=None):
         self.llm = llm
+        self.tracker = tracker
 
     def answer(self, question: str, role_prompt: str) -> str:
         full_prompt = f"""{role_prompt}
@@ -9,9 +12,12 @@ Be brief and to the point. Avoid over-explaining unless asked.
 Question: {question}
 Answer:"""
         response = self.llm.invoke(full_prompt)
-        return getattr(response, "content", str(response)).strip()
+        output = getattr(response, "content", str(response)).strip()
+        if self.tracker:
+                    self.tracker.log(full_prompt, output, count_tokens)
+        return output
 
-class StepByStepMathAgent(GenericAgent):
+class StepByStepAgent(GenericAgent):
     def answer(self, question: str) -> str:
         full_prompt = f"""
 You are a helpful and precise engineer or mathematics expert.
@@ -23,4 +29,8 @@ Question: {question}
 Answer:
 """
         response = self.llm.invoke(full_prompt)
-        return getattr(response, "content", str(response)).strip()
+        output = getattr(response, "content", str(response)).strip()
+        if self.tracker:
+                self.tracker.log(full_prompt, output, count_tokens)
+
+        return output
