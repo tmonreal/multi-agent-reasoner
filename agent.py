@@ -32,5 +32,5 @@ Answer:
         output = getattr(response, "content", str(response)).strip()
         if self.tracker:
                 self.tracker.log(full_prompt, output, count_tokens)
-
+                self.tracker.log_reasoning(full_prompt, count_tokens)
         return output

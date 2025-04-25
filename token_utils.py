@@ -1,15 +1,17 @@
 from transformers import AutoTokenizer
 
-#tokenizer = AutoTokenizer.from_pretrained("meta-llama/llama-4-scout-17b-16e-instruct")
-# Use a public tokenizer model just for token counting
-tokenizer = AutoTokenizer.from_pretrained("gpt2")
-
-#def count_tokens(text: str) -> int:
-#    tokens = tokenizer.encode(text, add_special_tokens=False)
-#    return len(tokens)
+try:
+    # Attempt to use the tokenizer from the official LLaMA model for accurate token counting.
+    # Note: Access to 'meta-llama/Llama-4-scout-17b-16e-instruct' may be gated and require approval.
+    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-4-scout-17b-16e-instruct")
+except:
+    # Fallback to a publicly available LLaMA-compatible tokenizer for approximate token counting.
+    # 'NousResearch/Llama-2-7b-hf' is fully compatible and accessible without special permissions.
+    tokenizer = AutoTokenizer.from_pretrained("NousResearch/Llama-2-7b-hf")
 
 def count_tokens(text: str) -> int:
-    return len(tokenizer.encode(text))
+    tokens = tokenizer.encode(text, add_special_tokens=False)
+    return len(tokens)
 
 class TokenTracker:
     def __init__(self):
