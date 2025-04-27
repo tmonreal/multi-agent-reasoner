@@ -16,3 +16,30 @@ Considera:
 Proporciona SOLO el valor numérico final redondeado a 2 decimales sin símbolos ni texto adicional.
 
 haceme un multiplicador serie-paralelo, y generame el codigo en verilog. debe ser con modulos y con su test bench.
+
+
+
+Demo
+
+¿Cuántos y que colores tiene la bandera Argentina?
+
+
+
+If a train leaves New York traveling west at 80 km/h and another train leaves Chicago traveling east at 70 km/h, and the distance between the cities is 1300 km, when will they meet?
+
+
+
+A rectangular garden has a length that is twice its width. If the perimeter of the garden is 60 meters, what are its dimensions?
+
+
+
+Calcula el costo total de construcción de una estructura cuadrada compuesta por:
+1. Una base de hormigón de 7.5 x 7.5 metros y 0.8 metros de espesor
+2. Muros de 4.2 metros de altura con 0.3 metros de grosor
+3. Un techo plano con área igual a la base y altura 0.1 metros
+
+Considera:
+- Costo del hormigón: $125 por m³
+- 15% adicional por desperdicio de material
+- Costo de mano de obra: $38 por m³ de hormigón utilizado
+- 5% de descuento si el costo total supera los $10,000
