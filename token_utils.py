@@ -27,9 +27,11 @@ class TokenTracker:
         self.reasoning_tokens += count_tokens_fn(text)
 
     def print_summary(self):
-        print("\n🔢 Token Usage Summary:")
-        print(f"📥 Input tokens: {self.input_tokens}")
-        print(f"📤 Output tokens: {self.output_tokens}")
-        print(f"🧠 Reasoning tokens: {self.reasoning_tokens}")
+        print("\n------------------------------------------")
+        print("\n###🔢 **Token Usage Summary:**")
+        print(f"\n - Input tokens: {self.input_tokens}")
+        print(f"\n - Output tokens: {self.output_tokens}")
+        print(f"\n - Reasoning tokens: {self.reasoning_tokens}")
         total = self.input_tokens + self.output_tokens + self.reasoning_tokens
-        print(f"💰 Total tokens: {total}")
+        print(f"\n - **Total tokens: {total}**")
+        print("\n------------------------------------------")

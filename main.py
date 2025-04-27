@@ -1,3 +1,4 @@
+import re
 from splitter import split_question
 from prompt_generator import generate_role_prompt
 from agent import GenericAgent, StepByStepAgent
@@ -55,15 +56,11 @@ def run_reasoning_pipeline(question: str):
     llm = load_llm()
     tracker = TokenTracker()
 
-    print("\nOriginal question:", question)
-
     classification = classify_question_complexity(llm, question, tracker)
-    print("\nGlobal classification:", classification)
 
     if classification == "simple":
         agent = GenericAgent(llm, tracker)
         answer = agent.answer(question, "You are a helpful expert. Answer clearly and briefly.")
-        print("\n✅ Final Answer:\n")
         print(answer)
         tracker.print_summary()
         return
@@ -71,28 +68,25 @@ def run_reasoning_pipeline(question: str):
     if classification == "math-step":
         agent = StepByStepAgent(llm, tracker)
         answer = agent.answer(question)
-        print("\n✅ Final Answer:\n")
         print(answer)
         tracker.print_summary()
         return
 
     # For complex reasoning, proceed with breakdown and agents
     strategy = decide_decomposition_strategy(llm, question, tracker)
-    print("\nDecomposition strategy:", strategy)
 
     if strategy == "steps":
         agent = StepByStepAgent(llm, tracker)
         answer = agent.answer(question)
-        print("\n✅ Final Answer:\n")
         print(answer)
         tracker.print_summary()
         return
 
     # Otherwise, default to subquestion breakdown
     subquestions = split_question(llm, question)
-    print("\n🔍 Sub-questions:")
-    for sq in subquestions:
-        print("-", sq)
+    #print("\n🔍 Sub-questions:")
+    #for sq in subquestions:
+    #    print("-", sq)
 
     context_so_far = []
 
@@ -116,16 +110,14 @@ Now answer the following question:
             answer = agent.answer(subq) 
         else:
             answer = agent.answer(subq, full_prompt)
-        #answer = agent.answer(subq, full_prompt)
         context_so_far.append((subq, answer))
 
-    print("\nPartial Answers:")
+    print("\nPartial subquestions and answers to reason the complex question:")
     for subq, ans in context_so_far:
-        print(f"\nQ: {subq}\nA: {ans}")
+        print(f"\nQ: {subq}\n \nA: {ans}")
 
     final = combine_answers(llm, context_so_far)
-    print("\n✅ Final Combined Answer:\n")
-    print(final)
+    print("\n\nFinal Answer:",final)
     tracker.print_summary()
 
 

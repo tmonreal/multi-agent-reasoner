@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Multi-Agent Reasoning LLM</title>
+    <link rel="icon" href="static/fav.png" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="static/fav_apple.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@400;600&display=swap" rel="stylesheet"> 
+
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #667eea;
+            color: white;
+            text-align: left;
+            padding: 10px 40px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .footer {
+            background-color: #667eea;
+            color: white;
+            text-align: center;
+            padding: 5px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            font-size: 0.9em;
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 100px); /* header + footer */
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+
+        .left-column {
+            width: 10%;
+            padding: 20px;
+            border-right: 1px solid #ccc;
+            overflow-y: auto;
+        }
+
+        .right-column {
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            background-color: #c3dafe;
+            padding: 20px;
+        }
+
+        #chat-container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #chatbox {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            scroll-behavior: smooth;
+        }
+
+        .userText, .botText {
+            margin-bottom: 12px;
+            padding: 12px;
+            border-radius: 10px;
+            line-height: 1.5;
+            max-width: 95%;
+        }
+
+        .userText {
+            background-color: #667eea;
+            color: white;
+        }
+
+        .botText {
+            position: relative;
+            background-color: white;
+            color: black;
+            padding-left: 60px;
+            overflow-wrap: break-word;
+        }
+
+        .botIcon {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        #userInput {
+            display: flex;
+            border-top: 1px solid #ccc;
+            padding: 10px;
+            background-color: #c3dafe;
+        }
+
+        #textInput {
+            flex: 1;
+            border: none;
+            padding: 10px;
+            border-radius: 20px;
+            font-size: 16px;
+            background-color: #f5f5f5;
+            resize: none;
+            min-height: 40px;
+            max-height: 150px;
+        }
+
+        #textInput:focus {
+            outline: none;
+            background-color: white;
+        }
+
+        .botText span h1, .botText span h2, .botText span h3 {
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        .botText span ul {
+            margin-left: 20px;
+        }
+
+        .botText span strong, .botText span b {
+            font-weight: bold;
+        }
+
+        @media screen and (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .left-column, .right-column {
+                width: 100%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h3>Multi-Agent Reasoning LLM</h3>
+    </div>
+
+    <div class="container">
+        <div class="right-column">
+            <h3><b>Ask any complex question. I will decompose, analyze and answer step-by-step.</b></h3>
+            <div id="chat-container">
+                <div id="chatbox">
+                    <div class="botText">
+                        <img class="botIcon" src="static/bot.jpg" alt="Bot">
+                        <span><strong>Hello!</strong> I'm a reasoning assistant. Ask me a complex question — I'll break it down, think logically, and respond step-by-step!</span>
+                    </div>
+                </div>
+                <div id="userInput">
+                    <textarea id="textInput" name="msg" placeholder="Type your message..." rows="2"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="left-column">
+            <h4><b>How it works:</b></h4>
+            <p>This chatbot uses a <b>multi-agent reasoning system</b> that analyzes your question, decomposes it into sub-tasks, and selects the best strategy to respond using logical, mathematical, or descriptive agents.</p>
+            <p><b>View the code and instructions on <a href="https://github.com/tmonreal" target="_blank">my GitHub</a>.</b></p>
+            <p><b>Connect with me on <a href="https://www.linkedin.com/in/trinidad-monreal/" target="_blank">LinkedIn</a>.</b></p>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2025 Multi-Agent ChatBot – Trinidad Monreal. All rights reserved.
+    </div>
+
+    <script>
+        function getBotResponse() {
+            var rawText = $("#textInput").val();
+            if (!rawText.trim()) return;
+            var userHtml = '<p class="userText"><span>' + rawText.replace(/\n/g, "<br>") + "</span></p>";
+            $("#textInput").val("");
+            $("#textInput").css("height", "40px"); 
+            $("#chatbox").append(userHtml);
+    
+            var loadingId = "loading-" + Date.now();
+            var loadingHtml = `
+                <div class="botText" id="${loadingId}">
+                    <img class="botIcon" src="static/bot.jpg" alt="Bot Icon">
+                    <span><em>Thinking...</em></span>
+                </div>`;
+            $("#chatbox").append(loadingHtml);
+    
+            $.post("/get", { msg: rawText }).done(function (data) {
+                $("#" + loadingId).remove();
+    
+                var botHtml = '<div class="botText">';
+                botHtml += '<img class="botIcon" src="static/bot.jpg" alt="Bot Icon">';
+                botHtml += '<span>' + data.answer + "</span>";
+                botHtml += '</div>';
+                $("#chatbox").append(botHtml);
+                document.getElementById("userInput").scrollIntoView({ block: "start", behavior: "smooth" });
+
+            });
+        }
+    
+        $("#textInput").keydown(function (e) {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                getBotResponse();
+            }
+        });
+    
+        $("#textInput").on("input", function() {
+            this.style.height = "auto";
+            this.style.height = (this.scrollHeight) + "px";
+        });
+    </script>    
+    
+</body>
+</html>
